@@ -32,6 +32,9 @@ public class RegistLevelServiceImpl extends ServiceImpl<RegistLevelMapper, Regis
         if(StringUtils.isNotBlank(registLevel.getName())) {
             wrapper.like("name",registLevel.getName());
         }
+        if(registLevel.getActive() != null){
+            wrapper.eq("active",registLevel.getActive());
+        }
 
         // 如果分页返回 IPage 如果不分页 返回 List
         if(registLevel.getWithPage() == 1) {

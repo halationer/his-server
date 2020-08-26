@@ -32,6 +32,8 @@ public class UmsUserController {
     CommonResult list(UmsUser umsUser) {
         return CommonResult.success(umsUserService.list(umsUser));
     }
+
+
     @PostMapping("/add")
     CommonResult add(UmsUser umsUser) {
         umsUser.setPassword(encoder.encode(umsUser.getPassword()));

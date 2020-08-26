@@ -52,7 +52,15 @@ public class UmsUser extends BasePojo {
      */
     private Integer userType;
 
+    /**
+     * 医生挂号级别
+     */
+    private Integer registlevel;
 
+    /**
+     * 归属部门
+     */
+    private Integer deptId;
 
     /**
      * 最后一次登录时间

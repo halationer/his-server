@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IRegisterService extends IService<Register> {
 
+    boolean add(Register register);
 }

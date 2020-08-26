@@ -32,7 +32,9 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
         if(StringUtils.isNotBlank(department.getName())) {
             wrapper.like("name",department.getName());
         }
-
+        if(department.getActive() != null){
+            wrapper.eq("active",department.getActive());
+        }
         // 如果分页返回 IPage 如果不分页 返回 List
         if(department.getWithPage() == 1) {
             return this.page(new Page<>(department.getPageNo(),department.getPageSize()),wrapper);

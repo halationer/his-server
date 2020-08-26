@@ -32,6 +32,16 @@ public class UmsUserServiceImpl extends ServiceImpl<UmsUserMapper, UmsUser> impl
         if(StringUtils.isNotBlank(umsUser.getUsername())) {
             wrapper.like("username",umsUser.getUsername());
         }
+        if(umsUser.getRegistlevel() !=null) {
+            wrapper.eq("registlevel",umsUser.getRegistlevel());
+        }
+        if(umsUser.getDeptId() !=null) {
+            wrapper.eq("dept_id",umsUser.getDeptId());
+        }
+        if(umsUser.getActive() !=null) {
+            wrapper.eq("active",umsUser.getActive());
+        }
+
         // 如果分页返回 IPage 如果不分页 返回 List
         if(umsUser.getWithPage() == 1) {
             return this.page(new Page<>(umsUser.getPageNo(),umsUser.getPageSize()),wrapper);

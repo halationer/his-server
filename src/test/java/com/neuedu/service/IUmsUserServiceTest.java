@@ -36,6 +36,8 @@ public class IUmsUserServiceTest {
                     "13888888888",
                     1,
                     null,
+                    null,
+                    null,
                     1,
                     null
             );
