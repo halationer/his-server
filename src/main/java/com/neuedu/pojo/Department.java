@@ -1,10 +1,11 @@
 package com.neuedu.pojo;
 
 import com.neuedu.util.BasePojo;
-import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -35,6 +36,10 @@ public class Department extends BasePojo {
      * 负责人
      */
     private String leader;
+    /**
+     * 部门类型
+     */
+    private Integer type;
 
     /**
      * 是否有效，1 有效，0 失效

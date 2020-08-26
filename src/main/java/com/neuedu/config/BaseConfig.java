@@ -2,8 +2,20 @@ package com.neuedu.config;
 
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.optimize.JsqlParserCountOptimize;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.neuedu.config.convert.DateConverter;
+import com.neuedu.config.convert.LocalDateConverter;
+import com.neuedu.config.convert.LocalDateTimeConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.format.FormatterRegistry;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -12,11 +24,24 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import javax.annotation.Resource;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Configuration
 public class BaseConfig extends WebMvcConfigurationSupport {
     @Resource
     MyWebInterceptor myWebInterceptor;
+
+    @Resource
+    LocalDateTimeConverter localDateTimeConverter;
+    @Resource
+    LocalDateConverter localDateConverter;
+    @Resource
+    DateConverter dateConverter;
+
+
     @Bean
     CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -24,9 +49,10 @@ public class BaseConfig extends WebMvcConfigurationSupport {
         configuration.addAllowedOrigin("*");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
-        source.registerCorsConfiguration("/**",configuration);
+        source.registerCorsConfiguration("/**", configuration);
         return new CorsFilter(source);
     }
+
     @Bean
     public PaginationInterceptor paginationInterceptor() {
         PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
@@ -38,6 +64,7 @@ public class BaseConfig extends WebMvcConfigurationSupport {
         paginationInterceptor.setCountSqlParser(new JsqlParserCountOptimize(true));
         return paginationInterceptor;
     }
+
     @Bean
     BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
@@ -45,8 +72,30 @@ public class BaseConfig extends WebMvcConfigurationSupport {
 
     @Override
     protected void addInterceptors(InterceptorRegistry registry) {
-       registry.addInterceptor(myWebInterceptor).addPathPatterns("/**");
+        registry.addInterceptor(myWebInterceptor).addPathPatterns("/**");
     }
 
 
+    @Override
+    protected void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        objectMapper.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
+        JavaTimeModule javaTimeModule = new JavaTimeModule();
+
+        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+
+        objectMapper.registerModule(javaTimeModule);
+        converters.add(new MappingJackson2HttpMessageConverter(objectMapper));
+    }
+
+
+    @Override
+    protected void addFormatters(FormatterRegistry registry) {
+        registry.addConverter(localDateTimeConverter);
+        registry.addConverter(localDateConverter);
+        registry.addConverter(dateConverter);
+    }
 }

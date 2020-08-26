@@ -1,10 +1,12 @@
 package com.neuedu.pojo;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.neuedu.util.BasePojo;
-import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -25,6 +27,12 @@ public class ConstantItem extends BasePojo {
      * 类别id
      */
     private Integer typeId;
+
+    /**
+     * 类别名
+     */
+    @TableField(exist = false)
+    private String typeName;
 
     /**
      * 常数项代码
@@ -50,6 +58,9 @@ public class ConstantItem extends BasePojo {
      * 创建时间
      */
     private LocalDateTime createtime;
+
+
+
 
 
 }

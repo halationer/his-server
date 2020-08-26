@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 public class DefaultExceptionHandler {
     @ExceptionHandler
     public CommonResult exceptionHandler(HttpServletRequest request,Exception ex) {
-//        ex.printStackTrace();
+        ex.printStackTrace();
         if(ex instanceof NoHandlerFoundException) {
             return CommonResult.nohandler();
         }

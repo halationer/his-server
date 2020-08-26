@@ -32,14 +32,17 @@ public class ConstantItemServiceImpl extends ServiceImpl<ConstantItemMapper, Con
         wrapper.orderByAsc("type_id");
         wrapper.orderByAsc("sort");
 
-        if(StringUtils.isNotBlank(constantItem.getName())) {
-            wrapper.like("name",constantItem.getName());
-        }
-
         // 如果分页返回 IPage 如果不分页 返回 List
         if(constantItem.getWithPage() == 1) {
-            return this.page(new Page<>(constantItem.getPageNo(),constantItem.getPageSize()),wrapper);
+            if(StringUtils.isNotBlank(constantItem.getName())) {
+                wrapper.like("item.name",constantItem.getName());
+            }
+            return getBaseMapper().list(new Page<>(constantItem.getPageNo(),constantItem.getPageSize()),wrapper);
+
         } else {
+            if(StringUtils.isNotBlank(constantItem.getName())) {
+                wrapper.like("name",constantItem.getName());
+            }
             return this.list(wrapper);
         }
 
